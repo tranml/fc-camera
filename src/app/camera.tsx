@@ -1,11 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { View, ActivityIndicator, StyleSheet } from "react-native";
 import { useCameraPermissions, CameraView } from "expo-camera";
-import { MaterialIcons } from "@expo/vector-icons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 export default function CameraScreen() {
   const [permission, requestPermission] = useCameraPermissions();
+  const cameraRef = useRef<CameraView>(null);
 
   useEffect(() => {
     if (permission && !permission.granted && permission.canAskAgain) {
@@ -22,7 +22,7 @@ export default function CameraScreen() {
   }
   return (
     <View>
-      <CameraView style={styles.camera} facing="front">
+      <CameraView ref={cameraRef} style={styles.camera} facing="front">
         <View style={styles.cameraControl}>
           <MaterialCommunityIcons
             name="record-circle-outline"
