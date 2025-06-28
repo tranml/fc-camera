@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Pressable,
   Image,
+  Button,
 } from "react-native";
 import {
   useCameraPermissions,
@@ -12,6 +13,9 @@ import {
   CameraCapturedPicture,
 } from "expo-camera";
 import { MaterialIcons } from "@expo/vector-icons";
+import path from "path";
+import * as FileSystem from "expo-file-system";
+import { router } from "expo-router";
 
 export default function CameraScreen() {
   const [permission, requestPermission] = useCameraPermissions();
@@ -31,6 +35,20 @@ export default function CameraScreen() {
     }
   };
 
+  const savePhoto = async (uri: string) => {
+    if (uri) {
+      const filename = path.parse(uri).base;
+      await FileSystem.copyAsync({
+        from: uri,
+        to: FileSystem.documentDirectory + filename,
+      });
+
+      setPhoto(null);
+      router.back();
+      console.log(filename);
+    }
+  };
+
   if (!permission?.granted) {
     return (
       <View style={styles.activityIndicatorContainer}>
@@ -43,8 +61,20 @@ export default function CameraScreen() {
     return (
       <View style={styles.photoContainer}>
         <Image source={{ uri: photo.uri }} style={styles.photo} />
+
+        <View>
+          <Button title="Save" />
+        </View>
+
         <Pressable style={styles.closeButton} onPress={() => setPhoto(null)}>
           <MaterialIcons name="close" size={24} color="black" />
+        </Pressable>
+
+        <Pressable
+          style={styles.saveButton}
+          onPress={() => savePhoto(photo.uri)}
+        >
+          <MaterialIcons name="save" size={24} color="black" />
         </Pressable>
       </View>
     );
@@ -107,6 +137,14 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 30,
     left: 20,
+    backgroundColor: "white",
+    borderRadius: 100,
+    padding: 10,
+  },
+  saveButton: {
+    position: "absolute",
+    top: 30,
+    right: 20,
     backgroundColor: "white",
     borderRadius: 100,
     padding: 10,
