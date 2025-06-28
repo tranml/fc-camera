@@ -1,6 +1,17 @@
 import { useEffect, useRef, useState } from "react";
-import { View, ActivityIndicator, StyleSheet, Pressable, Image } from "react-native";
-import { useCameraPermissions, CameraView, CameraCapturedPicture } from "expo-camera";
+import {
+  View,
+  ActivityIndicator,
+  StyleSheet,
+  Pressable,
+  Image,
+} from "react-native";
+import {
+  useCameraPermissions,
+  CameraView,
+  CameraCapturedPicture,
+} from "expo-camera";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default function CameraScreen() {
   const [permission, requestPermission] = useCameraPermissions();
@@ -29,7 +40,14 @@ export default function CameraScreen() {
   }
 
   if (photo) {
-    return <Image source={{ uri: photo.uri }} style={styles.photo} />;
+    return (
+      <View style={styles.photoContainer}>
+        <Image source={{ uri: photo.uri }} style={styles.photo} />
+        <Pressable style={styles.closeButton} onPress={() => setPhoto(null)}>
+          <MaterialIcons name="close" size={24} color="black" />
+        </Pressable>
+      </View>
+    );
   }
 
   return (
@@ -81,5 +99,16 @@ const styles = StyleSheet.create({
   photo: {
     width: "100%",
     height: "100%",
+  },
+  photoContainer: {
+    flex: 1,
+  },
+  closeButton: {
+    position: "absolute",
+    top: 30,
+    left: 20,
+    backgroundColor: "white",
+    borderRadius: 100,
+    padding: 10,
   },
 });
