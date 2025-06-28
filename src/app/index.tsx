@@ -53,9 +53,11 @@ export default function HomeScreen() {
         contentContainerStyle={{ gap: 1 }}
         columnWrapperStyle={{ gap: 1 }}
         renderItem={({ item }) => (
-          <Pressable style={styles.photoContainer}>
-            <Image style={styles.photo} source={{ uri: item.uri }} />
-          </Pressable>
+          <Link href={`/photo/${item.name}`} asChild>
+            <Pressable style={styles.photoContainer}>
+              <Image style={styles.photo} source={{ uri: item.uri }} />
+            </Pressable>
+          </Link>
         )}
         keyExtractor={(item) => item.name}
       />
