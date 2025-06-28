@@ -1,8 +1,41 @@
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import { Link } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import * as FileSystem from "expo-file-system";
+import { useEffect, useState } from "react";
+
+type Photo = {
+  name: string;
+  uri: string;
+};
 
 export default function HomeScreen() {
+  const [photos, setPhotos] = useState<Photo[]>([]);
+
+  useEffect(() => {
+    loadPhotos();
+  }, []);
+
+  const loadPhotos = async () => {
+    if (!FileSystem.documentDirectory) return;
+
+    const files = await FileSystem.readDirectoryAsync(
+      FileSystem.documentDirectory
+    );
+
+    // console.log("documentDirectory:", FileSystem.documentDirectory);
+    // console.log("files:", files);
+
+    setPhotos(
+      files.map((file) => ({
+        name: file,
+        uri: FileSystem.documentDirectory + file,
+      }))
+    );
+  };
+
+  console.log("photos:", JSON.stringify(photos, null, 2));
+
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <Text>Welcome to Camera App</Text>
