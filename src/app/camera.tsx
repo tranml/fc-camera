@@ -1,11 +1,11 @@
 import { useEffect } from "react";
-import { View, Text, ActivityIndicator } from "react-native";
-import { useCameraPermissions } from "expo-camera";
+import { View, ActivityIndicator, StyleSheet } from "react-native";
+import { useCameraPermissions, CameraView } from "expo-camera";
 
 export default function CameraScreen() {
   const [permission, requestPermission] = useCameraPermissions();
 
-  useEffect(() => {
+  useEffect(() => { 
     if (permission && !permission.granted && permission.canAskAgain) {
       requestPermission();
     }
@@ -13,14 +13,26 @@ export default function CameraScreen() {
 
   if (!permission?.granted) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <View style={styles.activityIndicatorContainer}>
         <ActivityIndicator size="large" color="#007AFF" />
       </View>
     );
   }
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Camera Screen</Text>
+    <View>
+      <CameraView style={styles.camera} />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  activityIndicatorContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  camera: {
+    width: "100%",
+    height: "100%",
+  }
+});
