@@ -82,13 +82,18 @@ export default function CameraScreen() {
 
   return (
     <View>
-      <CameraView ref={cameraRef} style={styles.camera} facing="front">
-        <View style={styles.cameraControl}>
-          <Pressable style={styles.recordButton} onPress={takePhoto}>
-            <View style={styles.recordButtonInner} />
-          </Pressable>
-        </View>
-      </CameraView>
+      <CameraView
+        ref={cameraRef}
+        style={styles.camera}
+        facing="front"
+        onCameraReady={() => console.log("Camera ready")}
+      />
+
+      <View style={styles.cameraControl}>
+        <Pressable style={styles.recordButton} onPress={takePhoto}>
+          <View style={styles.recordButtonInner} />
+        </Pressable>
+      </View>
     </View>
   );
 }
@@ -111,6 +116,10 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 20,
     backgroundColor: "#00000099",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
   recordButton: {
     width: 72,
