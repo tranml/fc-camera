@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react";
-import { View, ActivityIndicator, StyleSheet } from "react-native";
+import { View, ActivityIndicator, StyleSheet, Pressable } from "react-native";
 import { useCameraPermissions, CameraView } from "expo-camera";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 export default function CameraScreen() {
   const [permission, requestPermission] = useCameraPermissions();
@@ -24,11 +23,9 @@ export default function CameraScreen() {
     <View>
       <CameraView ref={cameraRef} style={styles.camera} facing="front">
         <View style={styles.cameraControl}>
-          <MaterialCommunityIcons
-            name="record-circle-outline"
-            size={72}
-            color="red"
-          />
+          <Pressable style={styles.recordButton}>
+            <View style={styles.recordButtonInner} />
+          </Pressable>
         </View>
       </CameraView>
     </View>
@@ -53,5 +50,19 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 20,
     backgroundColor: "#00000099",
+  },
+  recordButton: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    backgroundColor: "white",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  recordButtonInner: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: "red",
   },
 });
