@@ -6,10 +6,10 @@ import {
   FlatList,
   Image,
 } from "react-native";
-import { Link } from "expo-router";
+import { Link, useFocusEffect } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import * as FileSystem from "expo-file-system";
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 type Photo = {
   name: string;
@@ -19,9 +19,11 @@ type Photo = {
 export default function HomeScreen() {
   const [photos, setPhotos] = useState<Photo[]>([]);
 
-  useEffect(() => {
-    loadPhotos();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadPhotos();
+    }, [])
+  );
 
   const loadPhotos = async () => {
     if (!FileSystem.documentDirectory) return;
