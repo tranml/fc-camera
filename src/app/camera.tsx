@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { View, ActivityIndicator, StyleSheet, Pressable, Image } from "react-native";
-import { useCameraPermissions, CameraView } from "expo-camera";
+import { useCameraPermissions, CameraView, CameraCapturedPicture } from "expo-camera";
 
 export default function CameraScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = useRef<CameraView>(null);
-  const [photo, setPhoto] = useState<string | null>(null);
+  const [photo, setPhoto] = useState<CameraCapturedPicture | null>(null);
 
   useEffect(() => {
     if (permission && !permission.granted && permission.canAskAgain) {
@@ -16,7 +16,7 @@ export default function CameraScreen() {
   const takePhoto = async () => {
     if (cameraRef.current) {
       const photo = await cameraRef.current.takePictureAsync();
-      setPhoto(photo.uri);
+      setPhoto(photo);
     }
   };
 
@@ -29,7 +29,7 @@ export default function CameraScreen() {
   }
 
   if (photo) {
-    return <Image source={{ uri: photo }} style={styles.photo} />;
+    return <Image source={{ uri: photo.uri }} style={styles.photo} />;
   }
 
   return (
