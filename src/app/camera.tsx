@@ -20,7 +20,7 @@ export default function CameraScreen() {
   }
   return (
     <View>
-      <CameraView style={styles.camera} />
+      <CameraView style={styles.camera} facing="front" />
     </View>
   );
 }
