@@ -17,10 +17,12 @@ import path from "path";
 import * as FileSystem from "expo-file-system";
 import { router } from "expo-router";
 
+import VideoPlayer from "../components/VideoPlayer";
+
 export default function CameraScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = useRef<CameraView>(null);
-  const [photo, setPhoto] = useState<CameraCapturedPicture | null>(null);
+  const [photo, setPhoto] = useState<CameraCapturedPicture | undefined>();
 
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const [video, setVideo] = useState<string>();
@@ -34,6 +36,7 @@ export default function CameraScreen() {
   const onPress = () => {
     if (isRecording) {
       cameraRef.current?.stopRecording();
+      console.log("video being stoped manually", video);
       setIsRecording(false);
     } else {
       takePhoto();
@@ -59,6 +62,7 @@ export default function CameraScreen() {
   };
 
   const savePhoto = async (uri: string) => {
+    console.log("saving photo", uri);
     if (uri) {
       const filename = path.parse(uri).base;
       await FileSystem.copyAsync({
@@ -66,7 +70,8 @@ export default function CameraScreen() {
         to: FileSystem.documentDirectory + filename,
       });
 
-      setPhoto(null);
+      setPhoto(undefined);
+      setVideo(undefined);
       router.back();
       console.log(filename);
     }
@@ -80,22 +85,32 @@ export default function CameraScreen() {
     );
   }
 
-  if (photo) {
+  if (photo !== undefined || video !== undefined) {
     return (
       <View style={styles.photoContainer}>
-        <Image source={{ uri: photo.uri }} style={styles.photo} />
+        {photo && <Image source={{ uri: photo.uri }} style={styles.photo} />}
+        {video && <VideoPlayer uri={video} />}
 
         <View>
           <Button title="Save" />
         </View>
 
-        <Pressable style={styles.closeButton} onPress={() => setPhoto(null)}>
+        <Pressable
+          style={styles.closeButton}
+          onPress={() => {
+            setPhoto(undefined);
+            setVideo(undefined);
+          }}
+        >
           <MaterialIcons name="close" size={24} color="black" />
         </Pressable>
 
         <Pressable
           style={styles.saveButton}
-          onPress={() => savePhoto(photo.uri)}
+          onPress={() => {
+            const uri = photo?.uri || video;
+            if (uri) savePhoto(uri);
+          }}
         >
           <MaterialIcons name="save" size={24} color="black" />
         </Pressable>
