@@ -1,19 +1,16 @@
-import {
-  View,
-  Text,
-  Pressable,
-  StyleSheet,
-  FlatList,
-  Image,
-} from "react-native";
+import React from "react";
+import { View, Pressable, StyleSheet, FlatList, Image } from "react-native";
 import { Link, useFocusEffect } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import * as FileSystem from "expo-file-system";
 import { useCallback, useState } from "react";
+import { getVideoType } from "../utils/media";
+import VideoPlayer from "../components/VideoPlayer";
 
 type Photo = {
   name: string;
   uri: string;
+  type: "image" | "video";
 };
 
 export default function HomeScreen() {
@@ -39,6 +36,7 @@ export default function HomeScreen() {
       files.map((file) => ({
         name: file,
         uri: FileSystem.documentDirectory + file,
+        type: getVideoType(file),
       }))
     );
   };
@@ -55,7 +53,23 @@ export default function HomeScreen() {
         renderItem={({ item }) => (
           <Link href={`/photo/${item.name}`} asChild>
             <Pressable style={styles.photoContainer}>
-              <Image style={styles.photo} source={{ uri: item.uri }} />
+              {item.type === "video" ? (
+                <>
+                  <VideoPlayer uri={item.uri}/>
+                  <MaterialIcons
+                    name="play-circle-outline"
+                    size={24}
+                    color="white"
+                    style={{
+                      position: "absolute",
+                      top: 10,
+                      left: 10,
+                    }}
+                  />
+                </>
+              ) : (
+                <Image style={styles.photo} source={{ uri: item.uri }} />
+              )}
             </Pressable>
           </Link>
         )}
