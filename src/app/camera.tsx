@@ -35,6 +35,15 @@ export default function CameraScreen() {
     }
   };
 
+  const startRecording = async () => {
+    if (cameraRef.current) {
+      const video = await cameraRef.current.recordAsync({
+        maxDuration: 10,
+      });
+      console.log(video);
+    }
+  };
+
   const savePhoto = async (uri: string) => {
     if (uri) {
       const filename = path.parse(uri).base;
@@ -86,11 +95,16 @@ export default function CameraScreen() {
         ref={cameraRef}
         style={styles.camera}
         facing="front"
+        mode="video"
         onCameraReady={() => console.log("Camera ready")}
       />
 
       <View style={styles.cameraControl}>
-        <Pressable style={styles.recordButton} onPress={takePhoto}>
+        <Pressable
+          style={styles.recordButton}
+          onPress={takePhoto}
+          onLongPress={startRecording}
+        >
           <View style={styles.recordButtonInner} />
         </Pressable>
       </View>
