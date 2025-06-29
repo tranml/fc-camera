@@ -27,6 +27,8 @@ export default function CameraScreen() {
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const [video, setVideo] = useState<string>();
 
+
+
   useEffect(() => {
     if (permission && !permission.granted && permission.canAskAgain) {
       requestPermission();

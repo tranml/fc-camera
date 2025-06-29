@@ -1,8 +1,6 @@
 import React from "react";
-import { View, StyleSheet, Pressable } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { useVideoPlayer, VideoView } from "expo-video";
-import { useEvent } from "expo";
-import { MaterialIcons } from "@expo/vector-icons";
 
 interface VideoPlayerProps {
   uri: string;
@@ -11,8 +9,7 @@ interface VideoPlayerProps {
 export default function VideoPlayer({ uri }: VideoPlayerProps) {
   const player = useVideoPlayer(uri, (player) => {
     if (player) {
-      player.loop = true;
-      player.play();
+      player.loop = false;
     }
   });
 
@@ -31,7 +28,6 @@ export default function VideoPlayer({ uri }: VideoPlayerProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "black",
   },
   video: {
     flex: 1,
