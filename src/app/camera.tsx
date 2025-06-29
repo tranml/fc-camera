@@ -22,11 +22,23 @@ export default function CameraScreen() {
   const cameraRef = useRef<CameraView>(null);
   const [photo, setPhoto] = useState<CameraCapturedPicture | null>(null);
 
+  const [isRecording, setIsRecording] = useState<boolean>(false);
+  const [video, setVideo] = useState<string>();
+
   useEffect(() => {
     if (permission && !permission.granted && permission.canAskAgain) {
       requestPermission();
     }
   }, [permission]);
+
+  const onPress = () => {
+    if (isRecording) {
+      cameraRef.current?.stopRecording();
+      setIsRecording(false);
+    } else {
+      takePhoto();
+    }
+  };
 
   const takePhoto = async () => {
     if (cameraRef.current) {
@@ -37,10 +49,12 @@ export default function CameraScreen() {
 
   const startRecording = async () => {
     if (cameraRef.current) {
+      setIsRecording(true);
       const video = await cameraRef.current.recordAsync({
         maxDuration: 10,
       });
-      console.log(video);
+      setVideo(video?.uri);
+      setIsRecording(false);
     }
   };
 
@@ -101,11 +115,20 @@ export default function CameraScreen() {
 
       <View style={styles.cameraControl}>
         <Pressable
-          style={styles.recordButton}
-          onPress={takePhoto}
+          style={[styles.recordButton]}
+          onPress={onPress}
           onLongPress={startRecording}
         >
-          <View style={styles.recordButtonInner} />
+          <View
+            style={[
+              styles.recordButtonInner,
+              {
+                borderRadius: isRecording ? 10 : 30,
+                width: isRecording ? 40 : 60,
+                height: isRecording ? 40 : 60,
+              },
+            ]}
+          />
         </Pressable>
       </View>
     </View>
